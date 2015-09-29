@@ -64,7 +64,8 @@ function SurfacePoint(triangle, position) {
                 normal = neg(normal);
 
             // Make vector from frame scaled by coefficients
-            var outDirection = x * tangent + y * cross(normal, tangent) + z * normal;
+            var outDirection = add(scale(x, tangent),
+                add(scale(y, cross(normal, tangent)), scale(z, normal)));
             if (isZero(outDirection))
                 return null;
             var color = scale(1 / reflectivityMean, triangle.reflectivity);

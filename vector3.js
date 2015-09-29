@@ -1,11 +1,17 @@
 "use strict";
 
 function Vector3(x, y, z) {
-    if (x === undefined) x = 0;
-    if (y === undefined) y = x;
-    if (z === undefined) z = y;
-    return [x, y, z];
+    if( typeof x === "string" )
+    {
+        // three reals, spaced, parenthised: "(0.0e+0 0.0e+0 0.0e+0)"
+        var a = x.match( /^\(\s*(\S+)\s*(\S+)\s*(\S+)\s*\)$/ ) || []
+        return [parseFloat(a[1]), parseFloat(a[2]), parseFloat(a[3])];
+    }
+    else if( arguments.length >= 3 ) return [x, y, z];
+    else return [(x || 0), (x || 0), (x || 0)];
 }
+
+Vector3.regex = "(\\(.+\\))";
 
 function add(u, v) {
     return [u[0] + v[0],
@@ -72,7 +78,7 @@ function clip(x, lo, hi) {
     return Math.max(lo, Math.min(x, hi));
 }
 
-var ZERO = Vector3(0);          // TODO rename to Origin?
+var ZERO = Vector3(0);    // TODO rename to Origin? -- no: also used for light
 
 
 // Tests mostly from Clojure port

@@ -1,15 +1,21 @@
 "use strict";
-var iterations = 10; //00;
-var image = Image(200, 150);
-var camera = Camera([0, 0.75, -2],
-                    [0, 0, 1],
-                    45);
 
-var scene = Scene([3626, 5572, 5802],  // skyEmission
-                  [0.1, 0.09, 0.07],   // groundReflection
-                  [new Triangle([0, 0, 0], [0, 1, 0], [1, 1, 0],
-                                [0.7, 0.7, 0.7], [0, 0, 0])],
-                  camera.eyePosition());
+var MODEL_FORMAT_ID = "#MiniLight";
 
-minilight(image, iterations, camera, scene, randomCreate());
-var pgm = image.save(iterations);
+try
+{
+   var stream = streamer(model, MODEL_FORMAT_ID);
+
+   var iterations = Math.floor(stream(Real)[0]);
+   var image = Image(stream);
+   var camera = Camera(stream);
+
+   var scene = Scene(stream, camera.eyePosition());
+
+   minilight(image, iterations, camera, scene, randomGenerator());
+   var pgm = image.save(iterations);
+}
+catch( e )
+{
+   alert( e.name + " -- " + e.message );
+}

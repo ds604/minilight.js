@@ -1,19 +1,23 @@
 "use strict";
 
 var PPM_ID = 'P6';
-var MINILIGHT_URI = 'http://www.hxa7241.org/minilight/';
+var MINILIGHT_URI = 'http://www.hxa.name/minilight/';
 var DISPLAY_LUMINANCE_MAX = 200;
 var RGB_LUMINANCE = Vector3(0.2126, 0.7152, 0.0722);
 var GAMMA_ENCODE = 0.45;
 
-function Image(width, height) {
+function Image(stream) {
+    var params = stream( Real, Real );
+
+    var width  = Math.max( 1, Math.floor(params[0]) );
+    var height = Math.max( 1, Math.floor(params[1]) );
     var npixels = width * height;
     var pixels = [];
     for (var i = 0; i < 3 * npixels; ++i)
         pixels.push(0);
 
     var makeScaler = function(iteration) {
-        var divider = 1 / (1 + Math.max(iteration, 0));
+        var divider = 1 / Math.max(iteration, 1);
         var scale = calculateToneMapping(divider);
         scale *= divider;
         return function(channel) {
@@ -21,7 +25,7 @@ function Image(width, height) {
             return Math.min(Math.round(gammaed * 255), 255);
         };
     };
-            
+
     var calculateToneMapping = function(divider) {
         var sum_of_logs = 0;
         for (var i = 0; i < npixels; ++i) {

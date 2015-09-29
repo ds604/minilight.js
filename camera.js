@@ -1,9 +1,12 @@
-function Camera(viewPosition, viewDirection, viewAngleInDeg) {
-    viewDirection = normalize(viewDirection);
+function Camera(stream) {
+    var params = stream( Vector3, Vector3, Real );
+
+    var viewPosition  = params[0]
+    var viewDirection = normalize(params[1]);
     if (isZero(viewDirection))
         viewDirection = Vector3(0, 0, 1);
 
-    var viewAngle = clip(viewAngleInDeg, 10, 160) * (Math.PI/180);
+    var viewAngle = clip(params[2], 10, 160) * (Math.PI/180);
 
     var up, right = normalize(cross(Vector3(0, 1, 0),
                                     viewDirection));

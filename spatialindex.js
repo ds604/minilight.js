@@ -71,16 +71,19 @@
 var SpatialIndex =
    function()
 {
+   if( this === (function(){return this;}).call() )
+      return new SpatialIndex( arguments[0], arguments[1], arguments[2] );
+
    var items = arguments[1];
 
    // public construction, with: eyePosition, items
-   if( 2 === arguments.length )
+   if( arguments[2] === undefined )
    {
       var eyePosition = arguments[0];
 
       // make rectilinear bound
       {
-         // include eye position --  simplifies intersection algorithm
+         // include eye position -- simplifies intersection algorithm
          var rectBound = { lower: eyePosition, upper: eyePosition };
          // accommodate all items
          for( var i = items.length, rb = rectBound;  i-- > 0; )
@@ -116,13 +119,6 @@ var SpatialIndex =
 
    // make subcell tree, with main (recursive) constructor
    this.construct_( bound, items, level );
-
-
-/* DEBUG */
-document.writeln( 'SpatialIndex: ' + this );
-document.writeln( 'bound: lo '    + this.bound.lower + " up " + this.bound.upper );
-document.writeln( 'isBranch: ' + this.isBranch );
-document.writeln( 'subParts: ' + this.subParts[0].vertexs[0] + " " + this.subParts[0].vertexs[1] + " " + this.subParts[0].vertexs[2] );
 };
 
 
@@ -139,7 +135,7 @@ document.writeln( 'subParts: ' + this.subParts[0].vertexs[0] + " " + this.subPar
  * @param  rayDirection [Vector3]  ray direction (unitized)
  * @param  lastHit      [Triangle] previous item intersected
  *
- * @return [Object[Triangle,Vector3]|null] hit object and position, or null
+ * @return [Array[Triangle,Vector3]|null] hit object and position, or null
  */
 SpatialIndex.prototype.intersection =
    function( rayOrigin, rayDirection, lastHit )
@@ -189,15 +185,15 @@ SpatialIndex.prototype.construct_ =
    {
       // make subcells
       this.subParts = new Array( 8 );
-      for( var s = 0, q = 0;  s < subParts.length;  ++s )
+      for( var s = 0, q = 0;  s < this.subParts.length;  ++s )
       {
          // make subcell bound
          var subBound = { lower: Vector3(0), upper: Vector3(0) };
          for( var b = 0, c = (s & 1);  b < 3;  ++b, c = (s >> b) & 1 )
          {
-            var mid = (bound.lower[b] + bound.upper[b]) * 0.5;
-            subBound.lower[b] = c ? mid[b] : bound.lower[b];
-            subBound.upper[b] = c ? bound.upper[b] : mid[b];
+            var mid = (this.bound.lower[b] + this.bound.upper[b]) * 0.5;
+            subBound.lower[b] = c ? mid : this.bound.lower[b];
+            subBound.upper[b] = c ? this.bound.upper[b] : mid;
          }
 
          // collect items that overlap subcell
@@ -227,7 +223,7 @@ SpatialIndex.prototype.construct_ =
 
          // recurse, if any overlapping subitems
          this.subParts[s] = subItems.length ?
-            new SpatialIndex( subBound, subItems, subLevel ) : null;
+            SpatialIndex( subBound, subItems, subLevel ) : null;
       }
    }
    // make leaf: store items, and end recursion
@@ -248,7 +244,7 @@ SpatialIndex.prototype.construct_ =
  * @param  lastHit      [Triangle]      previous item intersected
  * @param  cellPosition [Vector3|falsy] walk-point, or falsy
  *
- * @return [Object[Triangle,Vector3]|null] hit object and position, or null
+ * @return [Array[Triangle,Vector3]|null] hit object and position, or null
  */
 SpatialIndex.prototype.intersectBranch_ =
    function( rayOrigin, rayDirection, lastHit, cellPosition )
@@ -264,7 +260,7 @@ SpatialIndex.prototype.intersectBranch_ =
 
    // walk, along ray, through intersected subcells
    // (cellPosition and subCell are the iterators)
-   for( ; ; )
+   while( true )
    {
       // maybe recurse into subcell, and maybe exit branch if item was hit
       if( this.subParts[subCell] )
@@ -278,7 +274,7 @@ SpatialIndex.prototype.intersectBranch_ =
       // find next subcell ray moves to
       // (find which face of corner ahead is crossed first)
       var axis = 2;
-      var step = new Array(3);
+      var step = new Array( 3 );
       for( var i = 3;  i-- > 0;  axis = (step[i] < step[axis]) ? i : axis )
       {
          // find which face (inter-/outer-) the ray is heading for (in this
@@ -312,7 +308,7 @@ SpatialIndex.prototype.intersectBranch_ =
  * @param  rayDirection [Vector3]  ray direction (unitized)
  * @param  lastHit      [Triangle] previous item intersected
  *
- * @return [Object[Triangle,Vector3]|null] hit object and position, or null
+ * @return [Array[Triangle,Vector3]|null] hit object and position, or null
  */
 SpatialIndex.prototype.intersectLeaf_ =
    function( rayOrigin, rayDirection, lastHit )
@@ -354,6 +350,5 @@ SpatialIndex.prototype.intersectLeaf_ =
    }
 
    // check there was a hit
-   //return hitObject ? { object: hitObject, position: hitPosition } : null;
    return hitObject ? [ hitObject, hitPosition ] : null;
 };

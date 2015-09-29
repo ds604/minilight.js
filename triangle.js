@@ -3,16 +3,19 @@
 var TOLERANCE = 1/1024;
 var EPSILON = 1/1048576;
 
+var Triangle = function(stream) {
+    if( this === (function(){return this;}).call() )
+        return new Triangle(stream);
 
-var Triangle = function(v0, v1, v2, reflectivity, emissivity) {
-    this.vertexs = [v0, v1, v2];
-    this.reflectivity = clamp(reflectivity, 0, 1);
-    this.emissivity = clamp(emissivity, 0, Infinity);
-    this.edge0 = sub(v1, v0);
-    this.edge1 = sub(v2, v1);
-    this.edge2 = sub(v2, v0);
+    var params = stream( Vector3, Vector3, Vector3, Vector3, Vector3 );
+
+    this.vertexs = [params[0], params[1], params[2]];
+    this.reflectivity = clamp(params[3], 0, 1);
+    this.emissivity = clamp(params[4], 0, Infinity);
+    this.edge0 = sub(this.vertexs[1], this.vertexs[0]);
+    this.edge1 = sub(this.vertexs[2], this.vertexs[1]);
+    this.edge2 = sub(this.vertexs[2], this.vertexs[0]);
 };
-
 
 Triangle.prototype.bound = function() {
     // calculate min and max across all vertexs
