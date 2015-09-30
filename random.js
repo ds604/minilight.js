@@ -17,16 +17,7 @@
  * paul.rutgers.edu/~rhoads/Code/code.html
  */
 
-
-// uses: Math
-
-
-
-
 "use strict";
-
-
-
 
 /**
  * Make a random generator (32 bit precision version).
@@ -34,7 +25,7 @@
  * @param  seed [integer|falsy] positive < 2^32, or zero or falsy for default
  * @return [function[-> real[0-1]]] generator
  */
-var randomGenerator = function( seed )
+module.exports = function( seed )
 {
    // condition param to 32 bit unsigned integer
    seed = !seed ? 0 : Math.floor(Math.abs(seed)) % 4294967296;

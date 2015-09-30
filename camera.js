@@ -1,4 +1,16 @@
-function Camera(stream) {
+var Vector3   = require('./vector3').Vector3;
+var RayTracer = require('./rayTracer');
+var Real      = require('./real');
+var stream    = require('./stream');
+var clip      = require('./vector3').clip;
+var normalize = require('./vector3').normalize;
+var cross     = require('./vector3').cross;
+var add       = require('./vector3').add;
+var scale     = require('./vector3').scale;
+var isZero    = require('./vector3').isZero;
+
+
+module.exports = function Camera(stream) {
     var params = stream( Vector3, Vector3, Real );
 
     var viewPosition  = params[0]
@@ -39,4 +51,4 @@ function Camera(stream) {
                 }
         }
     };
-}
+};

@@ -1,0 +1,34 @@
+{
+  "name": "minilight.js",
+  "version": "0.0.1",
+  "description": "a javascript port of of minilight http://www.hxa.name/minilight/",
+  "main": "minilight.js",
+  "scripts": {
+    "watch": "watchify ./index.js -v -o bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/darius/minilight.js.git"
+  },
+  "keywords": [
+    "radiosity",
+    "lighting",
+    "rendering"
+  ],
+  "author": "Harrison Ainsworth, Darius Bacon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/darius/minilight.js/issues"
+  },
+  "homepage": "https://github.com/darius/minilight.js#readme",
+  "devDependencies": {
+    "brfs": "^1.4.1",
+    "browserify": "^11.2.0",
+    "watchify": "^3.4.0"
+  },
+  "browserify": {
+    "transform": [
+      "brfs"
+    ]
+  }
+}

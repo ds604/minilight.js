@@ -38,18 +38,16 @@
  *       an Array, elements are Triangle
  */
 
-
-// uses: Math, Vector3, Triangle
-
-
-
-
 "use strict";
 
+var Vector3 = require('./vector3').Vector3;
+var add = require('./vector3').add;
+var sub = require('./vector3').sub;
+var scale = require('./vector3').scale;
+var neg = require('./vector3').neg;
+var clamp = require('./vector3').clamp;
+var TOLERANCE = require('./constants').TOLERANCE;
 
-
-
-/// constructor ----------------------------------------------------------------
 
 /**
  * Construct a SpatialIndex.
@@ -352,3 +350,5 @@ SpatialIndex.prototype.intersectLeaf_ =
    // check there was a hit
    return hitObject ? [ hitObject, hitPosition ] : null;
 };
+
+module.exports = SpatialIndex;

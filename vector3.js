@@ -80,6 +80,21 @@ function clip(x, lo, hi) {
 
 var ZERO = Vector3(0);    // TODO rename to Origin? -- no: also used for light
 
+module.exports.Vector3 = Vector3;
+module.exports.add = add;
+module.exports.sub = sub;
+module.exports.mul = mul;
+module.exports.scale = scale;
+module.exports.neg = neg;
+module.exports.isZero = isZero;
+module.exports.dot = dot;
+module.exports.norm = norm;
+module.exports.normalize = normalize;
+module.exports.cross = cross;
+module.exports.clamp = clamp;
+module.exports.clip = clip;
+module.exports.ZERO = ZERO;
+
 
 // Tests mostly from Clojure port
 

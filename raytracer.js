@@ -5,7 +5,17 @@
 
 "use strict";
 
-function RayTracer(scene) {
+var SurfacePoint = require('./surfacepoint');
+var sub          = require('./vector3').sub;
+var mul          = require('./vector3').mul;
+var scale        = require('./vector3').scale;
+var neg          = require('./vector3').neg;
+var ZERO         = require('./vector3').ZERO;
+var add          = require('./vector3').add;
+var normalize    = require('./vector3').normalize;
+
+
+module.exports = function RayTracer(scene) {
 
     // Return eyeward radiance. lastHit is a triangle or null.
     function getRadiance(rayOrigin, rayDirection, random, lastHit) {
@@ -53,4 +63,4 @@ function RayTracer(scene) {
     return {
         getRadiance: getRadiance,
     };
-}
+};

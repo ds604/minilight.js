@@ -1,12 +1,18 @@
 "use strict";
 
+var Vector3   = require('./vector3').Vector3;
+var Real      = require('./real');
+var stream    = require('./stream');
+var dot      = require('./vector3').dot;
+
+
 var PPM_ID = 'P6';
 var MINILIGHT_URI = 'http://www.hxa.name/minilight/';
 var DISPLAY_LUMINANCE_MAX = 200;
 var RGB_LUMINANCE = Vector3(0.2126, 0.7152, 0.0722);
 var GAMMA_ENCODE = 0.45;
 
-function Image(stream) {
+module.exports = function Image(stream) {
     var params = stream( Real, Real );
 
     var width  = Math.max( 1, Math.floor(params[0]) );
@@ -77,4 +83,4 @@ function Image(stream) {
             }
         },
     };
-}
+};

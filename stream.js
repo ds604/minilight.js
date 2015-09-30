@@ -1,8 +1,5 @@
 "use strict";
 
-
-
-
 /**
  * Make a string-line-streamer-parser; read the next line into a set of values.
  *
@@ -13,7 +10,7 @@
  *         throws ErrorModelFormat for invalid content text, and
  *         ExceptionModelEOF at end of content text.
  */
-var streamer = function( str, id )
+module.exports = function( str, id )
 {
    // split into lines (constant), and init index (mutable)
    var lines = str.match( /^.*$/mg );
@@ -59,7 +56,3 @@ var streamer = function( str, id )
               message: "model file format error: ended too early" };
    };
 };
-
-
-var Real = function( str ) { return parseFloat(str); };
-Real.regex = "(\\S+)";

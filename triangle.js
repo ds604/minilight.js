@@ -1,6 +1,17 @@
 "use strict";
 
-var TOLERANCE = 1/1024;
+var Vector3   = require('./vector3').Vector3;
+var add       = require('./vector3').add;
+var clamp     = require('./vector3').clamp;
+var sub       = require('./vector3').sub;
+var scale     = require('./vector3').scale;
+var dot       = require('./vector3').dot;
+var normalize = require('./vector3').normalize;
+var norm      = require('./vector3').norm;
+var cross     = require('./vector3').cross;
+var TOLERANCE = require('./constants').TOLERANCE;
+
+
 var EPSILON = 1/1048576;
 
 var Triangle = function(stream) {
@@ -71,6 +82,7 @@ Triangle.prototype.getArea = function() {
 };
 
 
+module.exports = Triangle;
 
 
 // Tests from Clojure port

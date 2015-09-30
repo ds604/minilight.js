@@ -1,5 +1,17 @@
 "use strict";
 
+var Vector3 = require('./vector3').Vector3;
+var add     = require('./vector3').add;
+var sub     = require('./vector3').sub;
+var mul     = require('./vector3').mul;
+var scale   = require('./vector3').scale;
+var neg     = require('./vector3').neg;
+var isZero  = require('./vector3').isZero;
+var dot     = require('./vector3').dot;
+var ZERO    = require('./vector3').ZERO;
+var cross   = require('./vector3').cross;
+
+
 // A surface point at a ray-object intersection.
 // All direction parameters are unit vectors away from the surface.
 function SurfacePoint(triangle, position) {
@@ -75,3 +87,5 @@ function SurfacePoint(triangle, position) {
 }
 
 var ONE_THIRD = Vector3(1/3);
+
+module.exports = SurfacePoint;

@@ -1,10 +1,18 @@
 "use strict";
 
+var SpatialIndex = require('./spatialindex');
+var Triangle     = require('./triangle');
+var Vector3      = require('./vector3').Vector3;
+var mul          = require('./vector3').mul;
+var clamp        = require('./vector3').clamp;
+var isZero       = require('./vector3').isZero;
+
+
 // Maximum number of objects in Scene.
 // (2^24 ~= 16 million)
 var TRIANGLES_MAX = 0x1000000;
 
-function Scene(stream, eyePosition) {
+module.exports = function Scene(stream, eyePosition) {
     var params = stream( Vector3, Vector3 );
 
     var skyEmission = clamp(params[0], 0, Infinity);
@@ -33,7 +41,7 @@ function Scene(stream, eyePosition) {
             return backDirection[1] < 0 ? skyEmission : groundReflection;
         },
     };
-}
+};
 
 function glows(triangle) {
     return !isZero(triangle.emissivity) && 0 < triangle.getArea();
