@@ -9,8 +9,7 @@ var Scene     = require('./scene');
 var minilight = require('./minilight');
 var randomGenerator = require('./random');
 
-//var model = fs.readFileSync(__dirname + '/scenes/cornellbox-n.ml.txt', 'utf8');
-var model = fs.readFileSync(__dirname + '/../../radiance/out.txt', 'utf8');
+var model = fs.readFileSync(__dirname + '/scenes/cornellbox-n.ml.txt', 'utf8');
 var MODEL_FORMAT_ID = "#MiniLight";
 
 try
