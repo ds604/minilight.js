@@ -4,6 +4,7 @@
   "description": "a javascript port of of minilight http://www.hxa.name/minilight/",
   "main": "minilight.js",
   "scripts": {
+    "start": "open ./index.html",
     "watch": "watchify ./index.js -v -o bundle.js"
   },
   "repository": {

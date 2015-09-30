@@ -9,15 +9,17 @@ JS port by Darius Bacon
 ### installation
 This code depends on node.js and npm being installed. After you clone this project, run `npm install` to pull in the project's dependencies.
 
-### building
+### running
+open index.html in a web browser or run `npm start`
 
+
+### building
 The browser compatible javascript is bundled into `bundle.js` via browserify.
  
 Invoking `npm run watch` will run continuously, looking for changes to any of the `.js` files, and rebuild the bundle automatically. You can then refresh your browser to see the updated changes.
 
 
 ### todo
-
 * better UI, interaction
    * use webworkers to put rendering in a background thread
       * all communication is serialised
