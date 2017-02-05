@@ -1,0 +1,25 @@
+{
+  "name": "minilight.js",
+  "version": "0.0.1",
+  "description": "A javascript port of minilight http://www.hxa.name/minilight/",
+  "main": "minilight.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mreinstein/minilight.js.git"
+  },
+  "keywords": [
+    "lighting",
+    "raytracing",
+    "global",
+    "illumination"
+  ],
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/mreinstein/minilight.js/issues"
+  },
+  "homepage": "https://github.com/mreinstein/minilight.js#readme"
+}

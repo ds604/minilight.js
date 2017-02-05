@@ -1,8 +1,6 @@
 "use strict";
 
 
-
-
 /**
  * Make a string-line-streamer-parser; read the next line into a set of values.
  *

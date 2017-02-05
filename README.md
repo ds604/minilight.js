@@ -1,4 +1,4 @@
-a javascript port of minilight http://www.hxa.name/minilight/
+A javascript port of minilight http://www.hxa.name/minilight/
 
 Original by Harrison Ainsworth / HXA7241 : 2010
 released under BSD license or UNLICENSE http://unlicense.org/
@@ -14,9 +14,5 @@ todo
       * all communication is serialised
       * pass frame data back like image saving
 * speed up
-
-
-### maybe / later
-
 * Random
    * 53 bit precision version ?
