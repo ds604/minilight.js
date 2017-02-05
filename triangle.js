@@ -1,76 +1,74 @@
-"use strict";
+'use strict'
 
-var TOLERANCE = 1/1024;
-var EPSILON = 1/1048576;
+var TOLERANCE = 1/1024
+var EPSILON = 1/1048576
 
 var Triangle = function(stream) {
-    if( this === (function(){return this;}).call() )
-        return new Triangle(stream);
+  if( this === (function(){return this}).call() )
+    return new Triangle(stream)
 
-    var params = stream( Vector3, Vector3, Vector3, Vector3, Vector3 );
+  var params = stream( Vector3, Vector3, Vector3, Vector3, Vector3 )
 
-    this.vertexs = [params[0], params[1], params[2]];
-    this.reflectivity = clamp(params[3], 0, 1);
-    this.emissivity = clamp(params[4], 0, Infinity);
-    this.edge0 = sub(this.vertexs[1], this.vertexs[0]);
-    this.edge1 = sub(this.vertexs[2], this.vertexs[1]);
-    this.edge2 = sub(this.vertexs[2], this.vertexs[0]);
-};
+  this.vertexs = [params[0], params[1], params[2]]
+  this.reflectivity = clamp(params[3], 0, 1)
+  this.emissivity = clamp(params[4], 0, Infinity)
+  this.edge0 = sub(this.vertexs[1], this.vertexs[0])
+  this.edge1 = sub(this.vertexs[2], this.vertexs[1])
+  this.edge2 = sub(this.vertexs[2], this.vertexs[0])
+}
 
 Triangle.prototype.bound = function() {
-    // calculate min and max across all vertexs
-    var v = this.vertexs;
-    var lower = clamp( clamp( v[0], -Infinity, v[1] ), -Infinity, v[2] );
-    var upper = clamp( clamp( v[0], v[1],  Infinity ), v[2],  Infinity );
+  // calculate min and max across all vertexs
+  var v = this.vertexs
+  var lower = clamp( clamp( v[0], -Infinity, v[1] ), -Infinity, v[2] )
+  var upper = clamp( clamp( v[0], v[1],  Infinity ), v[2],  Infinity )
 
-    // enlarge with some padding (for double precision FP)
-    return { lower: sub(lower, Vector3(TOLERANCE)),
-             upper: add(upper, Vector3(TOLERANCE)) };
-};
+  // enlarge with some padding (for double precision FP)
+  return { lower: sub(lower, Vector3(TOLERANCE)),
+   upper: add(upper, Vector3(TOLERANCE)) }
+}
 
 // Return a positive number d such that rayOrigin + d * rayDirection
 // lies within this triangle, if possible, else null.
 Triangle.prototype.intersection = function(rayOrigin, rayDirection) {
-    // NB This returns a number or null; the original returns a boolean
-    //  along with an output parameter.
-    var pvec = cross(rayDirection, this.edge2);
-    var det = dot(this.edge0, pvec);
-    if (-EPSILON < det && det < EPSILON)
-        return null;
-    var invDet = 1 / det;
-    var tvec = sub(rayOrigin, this.vertexs[0]);
-    var u = dot(tvec, pvec) * invDet;
-    if (u < 0 || 1 < u)
-        return null;
-    var qvec = cross(tvec, this.edge0);
-    var v = dot(rayDirection, qvec) * invDet;
-    if (v < 0 || 1 < u + v)
-        return null;
-    var hitDistance = dot(this.edge2, qvec) * invDet;
-    return 0 <= hitDistance ? hitDistance : null;
-};
+  // NB This returns a number or null; the original returns a boolean
+  //  along with an output parameter.
+  var pvec = cross(rayDirection, this.edge2)
+  var det = dot(this.edge0, pvec)
+  if (-EPSILON < det && det < EPSILON)
+    return null
+  var invDet = 1 / det
+  var tvec = sub(rayOrigin, this.vertexs[0])
+  var u = dot(tvec, pvec) * invDet
+  if (u < 0 || 1 < u)
+    return null
+  var qvec = cross(tvec, this.edge0)
+  var v = dot(rayDirection, qvec) * invDet
+  if (v < 0 || 1 < u + v)
+    return null
+  var hitDistance = dot(this.edge2, qvec) * invDet
+  return 0 <= hitDistance ? hitDistance : null
+}
 
 Triangle.prototype.samplePoint = function(random) {
-    var sqr1 = Math.sqrt(random());
-    var r2 = random();
-    return add(scale(1 - sqr1, this.edge0),
-               add(scale((1 - r2) * sqr1, this.edge2),
-                   this.vertexs[0]));
-};
+  var sqr1 = Math.sqrt(random())
+  var r2 = random()
+  return add(scale(1 - sqr1, this.edge0),
+   add(scale((1 - r2) * sqr1, this.edge2),
+     this.vertexs[0]))
+}
 
 Triangle.prototype.getNormal = function() {
-    return normalize(cross(this.edge0, this.edge1));
-};
+  return normalize(cross(this.edge0, this.edge1))
+}
 
 Triangle.prototype.getTangent = function() {
-    return normalize(this.edge0);
-};
+  return normalize(this.edge0)
+}
 
 Triangle.prototype.getArea = function() {
-    return 0.5 * norm(cross(this.edge0, this.edge1));
-};
-
-
+  return 0.5 * norm(cross(this.edge0, this.edge1))
+}
 
 
 // Tests from Clojure port
@@ -124,8 +122,8 @@ Triangle.prototype.getArea = function() {
 
 // (Just for testing.)
 function checkRandomRay(t) {
-    var rd = t.getNormal();
-    return t.intersect(sub(t.samplePoint(Math.random), rd), rd);
+  var rd = t.getNormal()
+  return t.intersect(sub(t.samplePoint(Math.random), rd), rd)
 }
 
 /// checkRandomRay(xytriangle)

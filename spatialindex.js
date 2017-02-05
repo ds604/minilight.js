@@ -42,11 +42,7 @@
 // uses: Math, Vector3, Triangle
 
 
-
-
-"use strict";
-
-
+'use strict'
 
 
 /// constructor ----------------------------------------------------------------
@@ -71,27 +67,27 @@
 var SpatialIndex =
    function()
 {
-   if( this === (function(){return this;}).call() )
-      return new SpatialIndex( arguments[0], arguments[1], arguments[2] );
+  if( this === (function(){return this}).call() )
+    return new SpatialIndex( arguments[0], arguments[1], arguments[2] )
 
-   var items = arguments[1];
+  var items = arguments[1]
 
    // public construction, with: eyePosition, items
    if( arguments[2] === undefined )
    {
-      var eyePosition = arguments[0];
+      var eyePosition = arguments[0]
 
       // make rectilinear bound
       {
          // include eye position -- simplifies intersection algorithm
-         var rectBound = { lower: eyePosition, upper: eyePosition };
+         var rectBound = { lower: eyePosition, upper: eyePosition }
          // accommodate all items
          for( var i = items.length, rb = rectBound;  i-- > 0; )
          {
             // expand to fit item
-            var ib = items[i].bound();
-            rb.lower = clamp( rb.lower, -Infinity, ib.lower );
-            rb.upper = clamp( rb.upper, ib.upper,  Infinity );
+            var ib = items[i].bound()
+            rb.lower = clamp( rb.lower, -Infinity, ib.lower )
+            rb.upper = clamp( rb.upper, ib.upper,  Infinity )
          }
       }
 
@@ -99,27 +95,27 @@ var SpatialIndex =
       {
          // find max dimension
          var maxSize = Math.max.apply( null,
-            sub( rectBound.upper, rectBound.lower ));
+            sub( rectBound.upper, rectBound.lower ))
          // set all dimensions to max
-         var cubeUpper = add( rectBound.lower, Vector3(maxSize) );
+         var cubeUpper = add( rectBound.lower, Vector3(maxSize) )
          // prevent any numerical slippage
-         cubeUpper = clamp( cubeUpper, rectBound.upper, cubeUpper );
+         cubeUpper = clamp( cubeUpper, rectBound.upper, cubeUpper )
       }
 
       // make cubical bound
-      var bound = { lower: rectBound.lower, upper: cubeUpper };
-      var level = 0;
+      var bound = { lower: rectBound.lower, upper: cubeUpper }
+      var level = 0
    }
    // private construction, with: bound, items, level
    else
    {
-      var bound = arguments[0];
-      var level = arguments[2];
+      var bound = arguments[0]
+      var level = arguments[2]
    }
 
    // make subcell tree, with main (recursive) constructor
-   this.construct_( bound, items, level );
-};
+   this.construct_( bound, items, level )
+}
 
 
 
@@ -143,8 +139,8 @@ SpatialIndex.prototype.intersection =
    // (fake polymorphism for the State pattern)
    return this.isBranch ?
       this.intersectBranch_( rayOrigin, rayDirection, lastHit, arguments[3] ) :
-      this.intersectLeaf_( rayOrigin, rayDirection, lastHit );
-};
+      this.intersectLeaf_( rayOrigin, rayDirection, lastHit )
+}
 
 
 
@@ -154,10 +150,10 @@ SpatialIndex.prototype.intersection =
 /// constants
 
 // accommodates scene including sun and earth, down to cm cells (use 47 for mm)
-SpatialIndex.MAX_LEVELS_ = 44;
+SpatialIndex.MAX_LEVELS_ = 44
 
 // 8 seemed reasonably optimal in casual testing
-SpatialIndex.MAX_ITEMS_  =  8;
+SpatialIndex.MAX_ITEMS_  =  8
 
 
 /**
@@ -174,41 +170,41 @@ SpatialIndex.MAX_ITEMS_  =  8;
 SpatialIndex.prototype.construct_ =
    function( bound, items, level )
 {
-   this.bound = bound;
+   this.bound = bound
 
    // is branch if items overflow leaf and tree not too deep
    this.isBranch = (items.length > SpatialIndex.MAX_ITEMS_) &&
-      (level < (SpatialIndex.MAX_LEVELS_ - 1));
+      (level < (SpatialIndex.MAX_LEVELS_ - 1))
 
    // make branch: make subcells, and recurse construction
    if( this.isBranch )
    {
       // make subcells
-      this.subParts = new Array( 8 );
+      this.subParts = new Array( 8 )
       for( var s = 0, q = 0;  s < this.subParts.length;  ++s )
       {
          // make subcell bound
-         var subBound = { lower: Vector3(0), upper: Vector3(0) };
+         var subBound = { lower: Vector3(0), upper: Vector3(0) }
          for( var b = 0, c = (s & 1);  b < 3;  ++b, c = (s >> b) & 1 )
          {
-            var mid = (this.bound.lower[b] + this.bound.upper[b]) * 0.5;
-            subBound.lower[b] = c ? mid : this.bound.lower[b];
-            subBound.upper[b] = c ? this.bound.upper[b] : mid;
+            var mid = (this.bound.lower[b] + this.bound.upper[b]) * 0.5
+            subBound.lower[b] = c ? mid : this.bound.lower[b]
+            subBound.upper[b] = c ? this.bound.upper[b] : mid
          }
 
          // collect items that overlap subcell
-         var subItems = [];
+         var subItems = []
          for( var i = 0;  i < items.length;  ++i )
          {
             // must overlap in all dimensions
-            var itemBound = items[i].bound();
+            var itemBound = items[i].bound()
             for( var b = 0, isOverlap = true;  b < 3;  ++b )
             {
                isOverlap &= (itemBound.upper[b] >= subBound.lower[b]) &&
-                  (itemBound.lower[b] < subBound.upper[b]);
+                  (itemBound.lower[b] < subBound.upper[b])
             }
 
-            if( isOverlap ) subItems.push( items[i] );
+            if( isOverlap ) subItems.push( items[i] )
          }
 
          // decide next level, curtailing degenerate subdivision
@@ -217,21 +213,21 @@ SpatialIndex.prototype.construct_ =
          // or if subdivision reaches below mm size)
          // (having a model including the sun requires one subcell copying
          // entire contents of parent to be allowed)
-         if( subItems.length === items.length ) ++q;
+         if( subItems.length === items.length ) ++q
          var subLevel = ((q > 1) || ((subBound.upper[0] - subBound.lower[0]) <
-            (TOLERANCE * 4))) ? SpatialIndex.MAX_LEVELS_ : level + 1;
+            (TOLERANCE * 4))) ? SpatialIndex.MAX_LEVELS_ : level + 1
 
          // recurse, if any overlapping subitems
          this.subParts[s] = subItems.length ?
-            SpatialIndex( subBound, subItems, subLevel ) : null;
+            SpatialIndex( subBound, subItems, subLevel ) : null
       }
    }
    // make leaf: store items, and end recursion
    else
    {
-      this.subParts = items;
+      this.subParts = items
    }
-};
+}
 
 
 /**
@@ -249,13 +245,13 @@ SpatialIndex.prototype.construct_ =
 SpatialIndex.prototype.intersectBranch_ =
    function( rayOrigin, rayDirection, lastHit, cellPosition )
 {
-   var midPoint = scale( 0.5, add( this.bound.lower, this.bound.upper ) );
+   var midPoint = scale( 0.5, add( this.bound.lower, this.bound.upper ) )
 
    // first call has no walk-point
-   cellPosition = cellPosition || rayOrigin;
+   cellPosition = cellPosition || rayOrigin
 
    // find which subcell holds walk-point
-   var subCell = 0;
+   var subCell = 0
    for( var i = 3;  i--;  subCell |= ((cellPosition[i] >= midPoint[i]) << i) );
 
    // walk, along ray, through intersected subcells
@@ -266,37 +262,37 @@ SpatialIndex.prototype.intersectBranch_ =
       if( this.subParts[subCell] )
       {
          var hit = this.subParts[subCell].intersection(
-            rayOrigin, rayDirection, lastHit, cellPosition );
+            rayOrigin, rayDirection, lastHit, cellPosition )
 
-         if( hit ) return hit;
+         if( hit ) return hit
       }
 
       // find next subcell ray moves to
       // (find which face of corner ahead is crossed first)
-      var axis = 2;
-      var step = new Array( 3 );
+      var axis = 2
+      var step = new Array( 3 )
       for( var i = 3;  i-- > 0;  axis = (step[i] < step[axis]) ? i : axis )
       {
          // find which face (inter-/outer-) the ray is heading for (in this
          // dimension)
-         var high = (subCell >> i) & 1;
+         var high = (subCell >> i) & 1
          var face = (rayDirection[i] < 0) ^ high ?
-            this.bound[high ? 'upper' : 'lower'][i] : midPoint[i];
+            this.bound[high ? 'upper' : 'lower'][i] : midPoint[i]
          // calculate distance to face
          // (div by zero produces infinity, which is later discarded)
-         step[i] = (face - rayOrigin[i]) / rayDirection[i];
+         step[i] = (face - rayOrigin[i]) / rayDirection[i]
          // last clause of for-statement notes nearest so far
       }
 
       // leaving branch if: direction is negative and subcell is low,
       // or direction is positive and subcell is high
-      if( ((subCell >> axis) & 1) ^ (rayDirection[axis] < 0) ) return null;
+      if( ((subCell >> axis) & 1) ^ (rayDirection[axis] < 0) ) return null
 
       // move to (outer face of) next subcell
-      cellPosition = add( rayOrigin, scale( step[axis], rayDirection ) );
-      subCell      = subCell ^ (1 << axis);
+      cellPosition = add( rayOrigin, scale( step[axis], rayDirection ) )
+      subCell      = subCell ^ (1 << axis)
    }
-};
+}
 
 
 /**
@@ -314,41 +310,41 @@ SpatialIndex.prototype.intersectLeaf_ =
    function( rayOrigin, rayDirection, lastHit )
 {
    // results
-   var hitObject   = null;
-   var hitPosition = null;
+   var hitObject   = null
+   var hitPosition = null
 
-   var boundLow = this.bound.lower;
-   var boundUpp = this.bound.upper;
+   var boundLow = this.bound.lower
+   var boundUpp = this.bound.upper
 
    // test all items in leaf
    for( var i = this.subParts.length, nearest = Number.MAX_VALUE;  i-- > 0; )
    //for( item in this.subParts )   // better ?
    {
-      var item = this.subParts[i];
+      var item = this.subParts[i]
 
       // avoid spurious intersection with surface just come from
       if( item !== lastHit )
       {
          // intersect ray with item, and inspect if nearest so far
-         var distance = item.intersection( rayOrigin, rayDirection );
+         var distance = item.intersection( rayOrigin, rayDirection )
          if( distance && (distance < nearest) )
          {
             // check intersection is inside cell bound (with tolerance)
-            var hit = add(rayOrigin, scale(distance, rayDirection));
-            var t   = TOLERANCE;
+            var hit = add(rayOrigin, scale(distance, rayDirection))
+            var t   = TOLERANCE
             if( (boundLow[0] - hit[0] <= t) && (hit[0] - boundUpp[0] <= t) &&
                 (boundLow[1] - hit[1] <= t) && (hit[1] - boundUpp[1] <= t) &&
                 (boundLow[2] - hit[2] <= t) && (hit[2] - boundUpp[2] <= t) )
             {
                // note nearest so far
-               hitObject   = item;
-               hitPosition = hit;
-               nearest     = distance;
+               hitObject   = item
+               hitPosition = hit
+               nearest     = distance
             }
          }
       }
    }
 
    // check there was a hit
-   return hitObject ? [ hitObject, hitPosition ] : null;
-};
+   return hitObject ? [ hitObject, hitPosition ] : null
+}

@@ -1,84 +1,84 @@
-"use strict";
+'use strict'
 
 function Vector3(x, y, z) {
-    if( typeof x === "string" )
-    {
-        // three reals, spaced, parenthised: "(0.0e+0 0.0e+0 0.0e+0)"
-        var a = x.match( /^\(\s*(\S+)\s*(\S+)\s*(\S+)\s*\)$/ ) || []
-        return [parseFloat(a[1]), parseFloat(a[2]), parseFloat(a[3])];
-    }
-    else if( arguments.length >= 3 ) return [x, y, z];
-    else return [(x || 0), (x || 0), (x || 0)];
+  if( typeof x === 'string' )
+  {
+    // three reals, spaced, parenthised: "(0.0e+0 0.0e+0 0.0e+0)"
+    var a = x.match( /^\(\s*(\S+)\s*(\S+)\s*(\S+)\s*\)$/ ) || []
+    return [parseFloat(a[1]), parseFloat(a[2]), parseFloat(a[3])]
+  }
+  else if( arguments.length >= 3 ) return [x, y, z]
+  else return [(x || 0), (x || 0), (x || 0)]
 }
 
-Vector3.regex = "(\\(.+\\))";
+Vector3.regex = "(\\(.+\\))"
 
 function add(u, v) {
-    return [u[0] + v[0],
-            u[1] + v[1],
-            u[2] + v[2]];
+  return [u[0] + v[0],
+          u[1] + v[1],
+          u[2] + v[2]]
 }
 
 function sub(u, v) {
-    return [u[0] - v[0],
-            u[1] - v[1],
-            u[2] - v[2]];
+  return [u[0] - v[0],
+          u[1] - v[1],
+          u[2] - v[2]]
 }
 
 function mul(u, v) {
-    return [u[0] * v[0],
-            u[1] * v[1],
-            u[2] * v[2]];
+  return [u[0] * v[0],
+          u[1] * v[1],
+          u[2] * v[2]]
 }
 
 function scale(c, v) {
-    return [c * v[0],
-            c * v[1],
-            c * v[2]];
+  return [c * v[0],
+          c * v[1],
+          c * v[2]]
 }
 
 function neg(v) {
-    return scale(-1, v);
+  return scale(-1, v)
 }
 
 function isZero(v) {
-    return v[0] === 0 && v[1] === 0 && v[2] === 0;
+  return v[0] === 0 && v[1] === 0 && v[2] === 0
 }
 
 function dot(u, v) {
-    return (u[0] * v[0]
-            + u[1] * v[1]
-            + u[2] * v[2]);
+  return (u[0] * v[0]
+          + u[1] * v[1]
+          + u[2] * v[2])
 }
 
 function norm(v) {
-    return Math.sqrt(dot(v, v));
+  return Math.sqrt(dot(v, v))
 }
 
 function normalize(v) {
-    var length = norm(v);
-    return scale(length === 0 ? 0 : 1/length, v);
+  var length = norm(v)
+  return scale(length === 0 ? 0 : 1/length, v)
 }
 
 function cross(u, v) {
-    return [u[1] * v[2] - u[2] * v[1],
-            u[2] * v[0] - u[0] * v[2],
-            u[0] * v[1] - u[1] * v[0]];
+  return [u[1] * v[2] - u[2] * v[1],
+          u[2] * v[0] - u[0] * v[2],
+          u[0] * v[1] - u[1] * v[0]]
 }
 
 function clamp(v, lo, hi) {
-    lo = (typeof lo === "number") ? Vector3(lo) : lo;
-    hi = (typeof hi === "number") ? Vector3(hi) : hi;
-    return [clip(v[0], lo[0], hi[0]),
-            clip(v[1], lo[1], hi[1]),
-            clip(v[2], lo[2], hi[2])];
+  lo = (typeof lo === "number") ? Vector3(lo) : lo
+  hi = (typeof hi === "number") ? Vector3(hi) : hi
+  return [clip(v[0], lo[0], hi[0]),
+          clip(v[1], lo[1], hi[1]),
+          clip(v[2], lo[2], hi[2])]
 }
 
 function clip(x, lo, hi) {
-    return Math.max(lo, Math.min(x, hi));
+  return Math.max(lo, Math.min(x, hi))
 }
 
-var ZERO = Vector3(0);    // TODO rename to Origin? -- no: also used for light
+var ZERO = Vector3(0)    // TODO rename to Origin? -- no: also used for light
 
 
 // Tests mostly from Clojure port
@@ -90,8 +90,8 @@ var ZERO = Vector3(0);    // TODO rename to Origin? -- no: also used for light
 /// Vector3(1,4,9)
 //. 1,4,9
 
-/// var dyn100 = sub([1, 2, 3], [0, 2, 3]);
-/// var dyn010 = sub([1, 2, 3], [1, 1, 3]);
+/// var dyn100 = sub([1, 2, 3], [0, 2, 3])
+/// var dyn010 = sub([1, 2, 3], [1, 1, 3])
 
 /// clamp([2,-1,-1], 0, 1)
 //. 1,0,0
