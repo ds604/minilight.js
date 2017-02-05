@@ -1,6 +1,6 @@
 {
   "name": "minilight.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A javascript port of minilight http://www.hxa.name/minilight/",
   "main": "minilight.js",
   "scripts": {
